@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import WeatherIcon from './weatherIcon'
 
 const CardContainer = styled.div`
-  min-width: 120px;
+  min-width: 110px;
   background: var(--White);
   border-radius: 4px;
   display: flex;
@@ -13,7 +13,7 @@ const CardContainer = styled.div`
   align-items: center;
   padding: 10px 0 5px 0;
   margin-bottom: 10px;
-  border: 1px solid rgba(255, 119, 51, 0.3);
+  border: 1px solid var(--Text-tertiary);
   transition: background .3s ease;
   &:not(:last-child){
     margin-right: 10px;
@@ -23,12 +23,16 @@ const CardContainer = styled.div`
   }
 `
 const Temp = styled.h1`
-  font-size: 1.2em;
+  font-size: 1.4em;
+  font-weight: normal;
   color: #aaa;
-  margin-bottom: 3px;
   color: var(--Ria-orange);
-  border-bottom: 1px solid var(--Light-orange);
   pointer-events: none;
+  span {
+    font-size: 0.8em;
+    margin-left: 2px;
+    color: var(--Ria-orange)
+  }
 `
 const Rh = styled.h3`
   font-size: 1em;
@@ -41,7 +45,7 @@ const Rh = styled.h3`
   img {
     margin-left: 2px;
     margin-bottom: 2px;
-    opacity: 80%;
+    opacity: 70%;
   }
 `
 const Timestamp = styled.h3`
@@ -57,7 +61,7 @@ const WeatherCard = ({weatherTemp, weatherRh, weatherIcon, timeStamp}) => {
 
   return (
     weatherTemp && <CardContainer>
-    <Temp>{weatherTemp}°C</Temp>
+    <Temp>{weatherTemp}<span>°C</span></Temp>
     <Rh>{weatherRh} <img alt="rh" src="./rh.svg"/></Rh>
     <WeatherIcon weatherIcon={weatherIcon}/>
     <Timestamp>{LocalTime} {Meridiem}</Timestamp>

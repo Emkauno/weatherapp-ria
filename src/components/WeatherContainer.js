@@ -13,23 +13,25 @@ import DailyCard from './DailyCard'
 const Container = styled.div`
   margin: 0 auto;
   width: 100%;
+  min-width: 700px;
   max-width: 890px;
-  height: 80vh;
-  background: var(--White);
+  background: var(--Lighter-gray);
   border-radius:8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  border: 1px solid rgba(255, 119, 51, 0.3);
+  border: 1px solid var(--Light-gray);
   @media(max-width: 900px){
     max-width: 680px;
     width: 100%;
+    min-width: 300px;
   }
   @media(max-width: 700px){
     max-width: 300px;
     width: 100%;
+    min-width: unset;
   }
 `
 const Title = styled.div`
@@ -40,12 +42,16 @@ const Title = styled.div`
   align-items: center;
   color: var(--Text-secondary);
   padding: 0 10px;
+  font-size: 1.2em;
+  @media(max-width: 850px){
+    font-size: 1em;
+  }
   span {
     font-weight: bold;
     margin: 0;
     padding: 0;
     margin-left: 5px;
-    color: var(--Text-primary);
+    color: var(--Ria-orange);
   }
 
 `
@@ -76,6 +82,7 @@ const DailyForecastContainer = styled.div`
   align-items: center;
   margin: 20px 0 0 0; 
   padding: 0 10px 10px 10px;
+  height: 400px;
   overflow-y: scroll;
 `
 const DailyItems = styled.div`
@@ -91,10 +98,12 @@ const DailyItems = styled.div`
 
 const WeatherContainer = ({cityName}) => {
 
+  const [isLoading, setIsLoading] = useState(true)
   const [hourlyData, setHourlyData] = useState(null)
   const [dailyData, setDailyData] = useState(null)
 
-  const accessKey = 'a0e178e53c6e4077834d7d4b21b6311b';
+
+  const accessKey = 'cb821d89227f4406bed149794eb205fa';
   const baseUrl = 'https://api.weatherbit.io/v2.0/';
 
 
@@ -105,18 +114,20 @@ const WeatherContainer = ({cityName}) => {
   useEffect(()=>{
      axios.get(hourlyForecast)
     .then(({ data }) => setHourlyData(data))
+    .then(setIsLoading(false))
   },[hourlyForecast])
 
   useEffect(()=>{
      axios.get(dailyForecast)
     .then(({ data }) => setDailyData(data))
+    .then(setIsLoading(false))
   },[dailyForecast])
 
   return (
     <>
-      {/* <input type="text" onChange={(e)=> cityHandler(e.target.value)} /> */}
-      <Container>
-        <Tabs/>
+     {isLoading ? <Spinner/> :     
+     <Container>
+        <Tabs cityData={cityName}/>
         <HourlyForecastContainer>
           <Title>Next hours in <span>{cityName}</span></Title>
           <HourItems>
@@ -133,7 +144,7 @@ const WeatherContainer = ({cityName}) => {
               }) : <Spinner/>} 
             </DailyItems>
           </DailyForecastContainer>
-      </Container>    
+      </Container> }
     </>
   )
 }
