@@ -6,6 +6,10 @@ import Tabs from './navigation/Tabs'
 import WeatherCard from './WeatherCard'
 import DailyCard from './DailyCard'
 
+
+
+
+
 const Container = styled.div`
   margin: 0 auto;
   width: 100%;
@@ -81,6 +85,10 @@ const DailyItems = styled.div`
   align-items:center;
   justify-content: flex-start;
 `
+
+
+
+
 const WeatherContainer = ({cityName}) => {
 
   const [hourlyData, setHourlyData] = useState(null)
@@ -103,8 +111,6 @@ const WeatherContainer = ({cityName}) => {
      axios.get(dailyForecast)
     .then(({ data }) => setDailyData(data))
   },[dailyForecast])
-
-
 
   return (
     <>

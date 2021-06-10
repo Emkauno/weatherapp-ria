@@ -84,7 +84,6 @@ const Tabs = () => {
           <img src="./search.svg" alt="search icon" />
         </SearchIcon>
       </SearchTab>
-      <hr/>
     </TabsWrapper>
   )
 }
