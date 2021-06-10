@@ -1,2 +1,1 @@
-# weatherapp-ria
-small weather app
+# Small weather app - Ria test
