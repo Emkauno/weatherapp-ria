@@ -95,11 +95,11 @@ const WeatherContainer = ({cityName}) => {
   const [dailyData, setDailyData] = useState(null)
 
   const accessKey = 'a0e178e53c6e4077834d7d4b21b6311b';
-  const baseUrl = 'http://api.weatherbit.io/v2.0/';
+  const baseUrl = 'https://api.weatherbit.io/v2.0/';
 
 
   const hourlyForecast = `${baseUrl}forecast/hourly?city=${cityName}&hours=8&tz=local&key=${accessKey}`
-  const dailyForecast = `${baseUrl}forecast/daily?city=${cityName}&&start_date=2021-06-06&end_date=2021-06-07&key=${accessKey}`
+  const dailyForecast = `${baseUrl}forecast/daily?city=${cityName}&days=7&key=${accessKey}` 
 
 
   useEffect(()=>{
@@ -125,7 +125,7 @@ const WeatherContainer = ({cityName}) => {
               }) : <Spinner/>} 
           </HourItems>
         </HourlyForecastContainer>
-        <Title>Next 3 days in <span>{cityName}</span></Title>
+        <Title>Next 7 days in <span>{cityName}</span></Title>
         <DailyForecastContainer>
           <DailyItems>
             { dailyData ? dailyData.data.map((item,i) => {
