@@ -1,7 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom'
 import { createGlobalStyle } from 'styled-components'
-import CityWeather from './components/CityWeather'
+import WeatherContainer from './components/WeatherContainer'
 import WebFont from 'webfontloader'
+import Spinner from './components/navigation/Spinner'
 
 const GlobalStyle = createGlobalStyle`
   :root {
@@ -10,6 +16,7 @@ const GlobalStyle = createGlobalStyle`
     --Text-secondary: #00113399;
     --White: #ffffff;
     --Light-orange: #ff77114d;
+    --Lighter-orange: #ff771120;
   }
 
   body {
@@ -19,10 +26,8 @@ const GlobalStyle = createGlobalStyle`
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1400px;
     height: 100vh;
-    margin: 0 auto;
-    background: #ccc;
+    background: linear-gradient(to bottom,var(--White), var(--Lighter-orange), 80%);
 
     p {
       line-height: 24px;
@@ -33,13 +38,15 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     color: var(--Text-primary);
+    
     &::-webkit-scrollbar {
      height: 0.3em;
+     width: 0.3em;
      &-track {
       background: var(--White)
      }
      &-thumb {
-      background-color: var(--Ria-orange);
+      background-color: var(--Light-orange);
       border-radius: 8px;
 
      }
@@ -49,6 +56,8 @@ const GlobalStyle = createGlobalStyle`
 
 
 function App() {
+
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     WebFont.load({
@@ -60,9 +69,20 @@ function App() {
 
   return (
     <div className="App">
-      <GlobalStyle/>
-      <h1>NAV</h1>
-      <CityWeather cityName="Santiago de Chile"/>
+      <Router>
+        <GlobalStyle/>
+        <Switch>
+          <Route exact path="/">
+            {isLoading ? <Spinner/> : <WeatherContainer cityName="Rio de Janeiro, BR"/>}
+          </Route>
+          <Route path="/beijing">
+            {isLoading ? <Spinner/> : <WeatherContainer cityName="Beijing, CN"/>}
+          </Route>
+          <Route path="/losangeles">
+            {isLoading ? <Spinner/> : <WeatherContainer cityName="Los Angeles, US"/>}
+          </Route>
+          </Switch>
+      </Router>
     </div>
   );
 }

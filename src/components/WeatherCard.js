@@ -5,16 +5,21 @@ import WeatherIcon from './weatherIcon'
 
 const CardContainer = styled.div`
   min-width: 120px;
-  background: white;
+  background: var(--White);
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px 0;
+  padding: 10px 0 5px 0;
+  margin-bottom: 10px;
   border: 1px solid rgba(255, 119, 51, 0.3);
+  transition: background .3s ease;
   &:not(:last-child){
     margin-right: 10px;
+  }
+  &:hover{
+    background: var(--Lighter-orange);
   }
 `
 const Temp = styled.h1`
@@ -23,6 +28,7 @@ const Temp = styled.h1`
   margin-bottom: 3px;
   color: var(--Ria-orange);
   border-bottom: 1px solid var(--Light-orange);
+  pointer-events: none;
 `
 const Rh = styled.h3`
   font-size: 1em;
@@ -31,14 +37,17 @@ const Rh = styled.h3`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
   img {
     margin-left: 2px;
+    margin-bottom: 2px;
     opacity: 80%;
   }
 `
 const Timestamp = styled.h3`
   font-size: 0.7em;
   color: var(--Text-secondary);
+  pointer-events: none;
 `
 
 const WeatherCard = ({weatherTemp, weatherRh, weatherIcon, timeStamp}) => {

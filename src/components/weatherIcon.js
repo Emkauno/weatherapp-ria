@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
   const Image = styled.img`
-  width: 50%;
+  width: 80px;
   `
 
 const weatherIcon = ({weatherIcon}) => {
