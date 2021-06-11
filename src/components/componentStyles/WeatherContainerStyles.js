@@ -22,7 +22,6 @@ export const Title = styled(motion.div)`
   justify-content: flex-start;
   align-items: center;
   color: var(--Text-secondary);
-  padding: 0 10px;
   font-size: 1.5em;
   font-weight: bold;
   margin: 25px 0;
