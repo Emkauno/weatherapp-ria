@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,6 +7,7 @@ import {
 import { createGlobalStyle } from 'styled-components'
 import WeatherContainer from './components/WeatherContainer'
 import WebFont from 'webfontloader'
+import Logo from './components/Logo'
 
 const GlobalStyle = createGlobalStyle`
   :root {
@@ -18,7 +19,8 @@ const GlobalStyle = createGlobalStyle`
     --Light-orange: #ff77114d;
     --Lighter-orange: #ff771120;
     --Light-gray: #00113326;
-    --Lighter-gray: #00113308;
+    --Lighter-gray: #d1d6e014;
+    --Lighter-gray2: #e6eaf39c;
   }
 
   body {
@@ -30,7 +32,9 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     padding-top: 20px;
     background: linear-gradient(to bottom,var(--White), var(--Lighter-orange), 80%);
-
+    #root{
+      width:100%;
+    }
     p {
       line-height: 24px;
     }
@@ -44,8 +48,9 @@ const GlobalStyle = createGlobalStyle`
     &::-webkit-scrollbar {
      height: 0.6em;
      width: 0.6em;
+ 
      &-track {
-      background: var(--White)
+      background: var(--White);
      }
      &-thumb {
       background-color: var(--Light-orange);
@@ -58,9 +63,21 @@ const GlobalStyle = createGlobalStyle`
 
 
 function App() {
-
-
-
+  const [hourlyData, setHourlyData] = useState({
+    la:{data:[]},
+    beijing:{data:[]},
+    rio:{data:[]},
+  })
+  const [dailyData, setDailyData] = useState({
+    la:{data:[]},
+    beijing:{data:[]},
+    rio:{data:[]},
+  })
+  const [cityLoad, setCityLoad] = useState({
+    la:false,
+    rio:false,
+    beijing:false,
+  })
   useEffect(() => {
     WebFont.load({
       google:{
@@ -72,16 +89,17 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <Logo/>
         <GlobalStyle/>
         <Switch>
           <Route exact path="/">
-            <WeatherContainer cityName="Rio de Janeiro, BR"/>
+            <WeatherContainer cityName="Rio de Janeiro, BR" slug="rio" cityLoad={cityLoad} setCityLoad={setCityLoad} hourlyData={hourlyData} setHourlyData={setHourlyData} dailyData={dailyData} setDailyData={setDailyData}/>
           </Route>
           <Route path="/beijing">
-            <WeatherContainer cityName="Beijing, CN"/>
+            <WeatherContainer cityName="Beijing, CN" slug="beijing" cityLoad={cityLoad} setCityLoad={setCityLoad} hourlyData={hourlyData} setHourlyData={setHourlyData} dailyData={dailyData} setDailyData={setDailyData}/>
           </Route>
           <Route path="/losangeles">
-            <WeatherContainer cityName="Los Angeles, US"/>
+            <WeatherContainer cityName="Los Angeles, US" slug="la" cityLoad={cityLoad} setCityLoad={setCityLoad} hourlyData={hourlyData} setHourlyData={setHourlyData} dailyData={dailyData} setDailyData={setDailyData}/>
           </Route>
           </Switch>
       </Router>

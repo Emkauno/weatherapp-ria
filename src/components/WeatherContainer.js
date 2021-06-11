@@ -1,150 +1,82 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import axios from 'axios'
+import { AnimatePresence } from 'framer-motion'
+import { Container, Title, HourlyForecastContainer, HourItems, DailyForecastContainer, DailyItems } from './componentStyles/WeatherContainerStyles'
 import Spinner from './navigation/Spinner'
 import Tabs from './navigation/Tabs'
 import WeatherCard from './WeatherCard'
 import DailyCard from './DailyCard'
 
-
-
-
-
-const Container = styled.div`
-  margin: 0 auto;
-  width: 100%;
-  min-width: 700px;
-  max-width: 890px;
-  background: var(--Lighter-gray);
-  border-radius:8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  border: 1px solid var(--Light-gray);
-  @media(max-width: 900px){
-    max-width: 680px;
-    width: 100%;
-    min-width: 300px;
-  }
-  @media(max-width: 700px){
-    max-width: 300px;
-    width: 100%;
-    min-width: unset;
-  }
-`
-const Title = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  color: var(--Text-secondary);
-  padding: 0 10px;
-  font-size: 1.2em;
-  @media(max-width: 850px){
-    font-size: 1em;
-  }
-  span {
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
-    margin-left: 5px;
-    color: var(--Ria-orange);
-  }
-
-`
-const HourlyForecastContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction:column;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 20px;
-`
-const HourItems = styled.div`
-  width: 100%;
-  overflow-x: scroll;
-  display:flex;
-  flex-direction: row;
-  align-items:center;
-  justify-content: flex-start;
-  padding: 10px;
-`
-
-const DailyForecastContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 20px 0 0 0; 
-  padding: 0 10px 10px 10px;
-  height: 400px;
-  overflow-y: scroll;
-`
-const DailyItems = styled.div`
-  width: 100%;
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  justify-content: flex-start;
-`
-
-
-
-
-const WeatherContainer = ({cityName}) => {
-
-  const [isLoading, setIsLoading] = useState(true)
-  const [hourlyData, setHourlyData] = useState(null)
-  const [dailyData, setDailyData] = useState(null)
+const WeatherContainer = ({cityName, slug, cityLoad, setCityLoad, hourlyData, dailyData, setHourlyData, setDailyData}) => {
+  const [dailyLoading, setDailyLoading] = useState(true)
+  const [hourlyLoading, setHourlyLoading] = useState(true)
 
 
   const accessKey = 'cb821d89227f4406bed149794eb205fa';
   const baseUrl = 'https://api.weatherbit.io/v2.0/';
 
 
-  const hourlyForecast = `${baseUrl}forecast/hourly?city=${cityName}&hours=8&tz=local&key=${accessKey}`
+  const hourlyForecast = `${baseUrl}forecast/hourly?city=${cityName}&hours=6&tz=local&key=${accessKey}`
   const dailyForecast = `${baseUrl}forecast/daily?city=${cityName}&days=7&key=${accessKey}` 
 
 
   useEffect(()=>{
-     axios.get(hourlyForecast)
-    .then(({ data }) => setHourlyData(data))
-    .then(setIsLoading(false))
+    if (!cityLoad[slug]) {
+      setHourlyLoading(true)
+      axios.get(hourlyForecast)
+      .then(({ data }) => setTimeout(()=>{
+        setHourlyData({...hourlyData,[slug]:data})
+        setCityLoad({...cityLoad,[slug]:true})
+      },10))
+      .then(()=>{
+        setTimeout(()=>{
+          setHourlyLoading(false)
+        },1000)
+      })
+    }
   },[hourlyForecast])
 
   useEffect(()=>{
-     axios.get(dailyForecast)
-    .then(({ data }) => setDailyData(data))
-    .then(setIsLoading(false))
+    if (!cityLoad[slug]) {
+    setDailyLoading(true)
+    axios.get(dailyForecast)
+    .then(({ data }) => setTimeout(()=>{
+      setDailyData({...dailyData,[slug]:data})
+      setCityLoad({...cityLoad,[slug]:true})
+    },10))
+    .then(()=>{
+      setTimeout(()=>{
+        setDailyLoading(false)
+      },1000)
+    })
+  }
   },[dailyForecast])
 
   return (
     <>
-     {isLoading ? <Spinner/> :     
      <Container>
         <Tabs cityData={cityName}/>
+        <Title>Next hours in <span>{cityName}</span></Title>
         <HourlyForecastContainer>
-          <Title>Next hours in <span>{cityName}</span></Title>
-          <HourItems>
-            { hourlyData ? hourlyData.data.map((item,i) => {
-                return <WeatherCard item={item} key={i} weatherTemp={hourlyData.data[i].temp} weatherRh={hourlyData.data[i].rh} weatherIcon={hourlyData.data[i].weather.icon} timeStamp={hourlyData.data[i].timestamp_local}/>
-              }) : <Spinner/>} 
-          </HourItems>
+          <AnimatePresence exitBeforeEnter>
+            {!hourlyLoading && hourlyData ? <HourItems initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} key="hour-items">
+              {hourlyData[slug].data.map((item,i) => (
+                <WeatherCard  initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} item={item} key={i} weatherTemp={item.temp} weatherRh={item.rh} weatherIcon={item.weather.icon} timeStamp={item.timestamp_local}/>
+              ))}
+            </HourItems> : <Spinner/>}
+          </AnimatePresence>
         </HourlyForecastContainer>
         <Title>Next 7 days in <span>{cityName}</span></Title>
         <DailyForecastContainer>
-          <DailyItems>
-            { dailyData ? dailyData.data.map((item,i) => {
-                return <DailyCard item={item} key={i} weatherIcon={dailyData.data[i].weather.icon} minTemp={dailyData.data[i].min_temp} maxTemp={dailyData.data[i].max_temp} rh={dailyData.data[i].rh} date={dailyData.data[i].datetime} comment={dailyData.data[i].weather.description}/>
-              }) : <Spinner/>} 
-            </DailyItems>
+          <AnimatePresence exitBeforeEnter>
+            {!dailyLoading && dailyData ? <DailyItems initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} key="daily-items">
+              {dailyData[slug].data.map((item,i) => (
+                <DailyCard initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} item={item} key={i} weatherIcon={item.weather.icon} minTemp={item.min_temp} maxTemp={item.max_temp} rh={item.rh} date={item.datetime} comment={item.weather.description}/>
+              ))}
+            </DailyItems> : <Spinner/>}
+          </AnimatePresence>
           </DailyForecastContainer>
-      </Container> }
+      </Container>
     </>
   )
 }
